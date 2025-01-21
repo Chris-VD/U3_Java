@@ -18,14 +18,14 @@ public class exer1 {
         int numMines = scanner.nextInt();
 
         // Comprobamos que non haxa máis minas que xadrados
-        if (numMines > rowNumber * columnNumber){
+        if (numMines > (rowNumber * columnNumber - 1)){
             System.out.println("Número de minas inválido, cerrando programa");
             System.exit(0);
         }
         
         // Estos dous arrays só están pa mostrar as filas e columnas (F1, F2, C1, C2...)
-        String[] rows = new String[rowNumber];
-        String[] columns = new String[columnNumber];
+        int[] rows = new int[rowNumber];
+        int[] columns = new int[columnNumber];
 
         // Esta é a amtriz que se lle mostra ó xogador
         String[][] field = new String[rowNumber][columnNumber];
@@ -41,13 +41,17 @@ public class exer1 {
         // Comprobadores
         boolean winCheck = false;
         boolean gameOver = false;
+        boolean firstTurn = true;
+
+        // Selección do xogador
+        int userRow, userCol, userAcc;
 
         // Enechemos os vectores e matrices todos cos seus correspondentes valores
         for(int i = 1; i<rows.length+1; i++){
-            rows[i-1] = "F"+ i;
+            rows[i-1] = i;
         }
         for(int i = 1; i<columns.length+1; i++){
-            columns[i-1] = "C"+ i;
+            columns[i-1] = i;
         }
         for(int i = 0; i < field.length; i++){
             for(int j = 0; j< field[i].length; j++){
@@ -55,6 +59,50 @@ public class exer1 {
             }
         }
 
+        // Mostramos o campo vacío
+        for(int j = 0; j < columns.length; j++){
+            System.out.print("\tC"+columns[j]);
+        }
+        System.out.println();
+        for(int i = 0; i < field.length; i++){
+            System.out.print("F"+rows[i]+"\t");
+            for(int j = 0; j < field[i].length; j++){
+                System.out.print(field[i][j]+"\t");
+            }
+            System.out.println();
+        }
+
+        // Primeira selección do usuario
+        // Faise esto para asegurar que a primera selección non será unha mina
+        while(true){
+            System.out.println();
+            System.out.println("Fila:");
+            userRow = scanner.nextInt();
+            if(userRow < 0 || userRow > rowNumber){
+                System.out.println("Valor inválido");
+                continue;
+            }
+            userRow--;
+            System.out.println("Columna");
+            userCol = scanner.nextInt();
+            if(userCol < 0 || userCol > columnNumber){
+                System.out.println("Valor inválido");
+                continue;
+            }
+            userCol--;
+            System.out.println("Acción (1: Mostrar / 0: Marcar / Outro número: Cancelar)");
+            userAcc = scanner.nextInt();
+            if(userAcc < 0 || userAcc > 1){
+                System.out.println("Cancelando");
+                continue;
+            }
+            playerSelec[0] = userRow;
+            playerSelec[1] = userCol;
+            playerSelec[2] = userAcc;
+            firstTurn = true;
+            break;
+        }
+        
         // Asignamos as minas
         for(int i = 0; i < mines.length; i++){
             for(int j = 0; j< mines[i].length; j++){
@@ -69,7 +117,13 @@ public class exer1 {
             if(mines[randRow][randCol] != true){
                 // Cada vez que asignamos unha mina restámoslle un ó valor "minesRem" ata que este sexa 0
                 mines[randRow][randCol] = true;
-                minesRem--;
+                // Comprobamos que o logar ond ecolocamos a mina non é onde seleccionou o xogadore
+                if(randRow == playerSelec[0] && randCol == playerSelec[1]){
+                    mines[randRow][randCol] = false;
+                }
+                else{
+                    minesRem--;
+                }
             }
         }
 
@@ -128,17 +182,36 @@ public class exer1 {
         }
 
         while (true) {
-            // Esta secuencia mostra todo o campo de minas por pantalla coas súas coordenadas, ben feitiño
-            for(int j = 0; j < columns.length; j++){
-                System.out.print("\t"+columns[j]);
+            // Game Over check
+            if(gameOver == true){
+                for(int i = 0; i < field.length; i++){
+                    for(int j = 0; j < field[i].length; j++){
+                        if(field[i][j] != "F" && numbers[i][j] == 9){
+                            if(numbers[i][j] == 9){
+                                field[i][j] = "X";
+                            }
+                            else{
+                                field[i][j] = Integer.toString(numbers[i][j]);
+                            }
+                        }
+                    }
+                }
             }
-            System.out.println();
-            for(int i = 0; i < field.length; i++){
-                System.out.print(rows[i]+"\t");
-                for(int j = 0; j < field[i].length; j++){
-                    System.out.print(field[i][j]+"\t");
+
+            // Comprobamos que non sexa o primeiro turno
+            if(firstTurn==false){
+                // Esta secuencia mostra todo o campo de minas por pantalla coas súas coordenadas, ben feitiño
+                for(int j = 0; j < columns.length; j++){
+                    System.out.print("\tC"+columns[j]);
                 }
                 System.out.println();
+                for(int i = 0; i < field.length; i++){
+                    System.out.print("F"+rows[i]+"\t");
+                    for(int j = 0; j < field[i].length; j++){
+                        System.out.print(field[i][j]+"\t");
+                    }
+                    System.out.println();
+                }
             }
             /*
         // Mapa das minas
@@ -158,7 +231,7 @@ public class exer1 {
                 }
             }
             System.out.println();
-            */
+            //*/
             // Game Over check
             if(gameOver == true){
                 System.out.println("\n\t\t\tGAME OVER\n");
@@ -170,32 +243,34 @@ public class exer1 {
                 break;
             }
 
-            // Turno do usuario
-            System.out.println();
-            System.out.println("Fila:");
-            int userRow = scanner.nextInt();
-            if(userRow < 0 || userRow > rowNumber){
-                System.out.println("Valor inválido");
-                continue;
+            // Comprobamos que non sexa o primeiro turno
+            if(firstTurn == false){
+                // Turno do usuario
+                System.out.println();
+                System.out.println("Fila:");
+                userRow = scanner.nextInt();
+                if(userRow < 0 || userRow > rowNumber){
+                    System.out.println("Valor inválido");
+                    continue;
+                }
+                userRow--;
+                System.out.println("Columna");
+                userCol = scanner.nextInt();
+                if(userCol < 0 || userCol > columnNumber){
+                    System.out.println("Valor inválido");
+                    continue;
+                }
+                userCol--;
+                System.out.println("Acción (1: Mostrar / 0: Marcar / Outro número: Cancelar)");
+                userAcc = scanner.nextInt();
+                if(userAcc < 0 || userAcc > 1){
+                    System.out.println("Cancelando");
+                    continue;
+                }
+                playerSelec[0] = userRow;
+                playerSelec[1] = userCol;
+                playerSelec[2] = userAcc;
             }
-            userRow--;
-            System.out.println("Columna");
-            int userCol = scanner.nextInt();
-            if(userCol < 0 || userCol > columnNumber){
-                System.out.println("Valor inválido");
-                continue;
-            }
-            userCol--;
-            System.out.println("Acción (1: Mostrar / 0: Marcar / Outro número: Cancelar)");
-            int userAcc = scanner.nextInt();
-            if(userAcc < 0 || userAcc > 1){
-                System.out.println("Cancelando");
-                continue;
-            }
-            playerSelec[0] = userRow;
-            playerSelec[1] = userCol;
-            playerSelec[2] = userAcc;
-
             // Comprobador
             /*
             playerSelec =  [fila, columnna, acción]
@@ -229,59 +304,59 @@ public class exer1 {
                 // Coma antes, primeiro comprobamos se o cadrado existe, se é así, comprobamos que non teña unha "F", e se non a ten, revelamos o número do cadrado
                 // Dereita
                 if(playerSelec[1]+1 <= mines[playerSelec[0]].length-1 && field[playerSelec[0]][playerSelec[1]+1] != "F"){
-                    field[playerSelec[0]][playerSelec[1]+1] = Integer.toString(numbers[playerSelec[0]][playerSelec[1]+1]);
                     if(numbers[playerSelec[0]][playerSelec[1]+1] == 9 && field[playerSelec[0]][playerSelec[1]+1] == "-"){
                         gameOver = true;
                     }
+                    field[playerSelec[0]][playerSelec[1]+1] = Integer.toString(numbers[playerSelec[0]][playerSelec[1]+1]);
                 }
                 // Esquerda
                 if(playerSelec[1]-1 >= 0 && field[playerSelec[0]][playerSelec[1]-1] != "F"){
-                    field[playerSelec[0]][playerSelec[1]-1] = Integer.toString(numbers[playerSelec[0]][playerSelec[1]-1]);
                     if(numbers[playerSelec[0]][playerSelec[1]-1] == 9 && field[playerSelec[0]][playerSelec[1]-1] == "-"){
                         gameOver = true;
                     }
+                    field[playerSelec[0]][playerSelec[1]-1] = Integer.toString(numbers[playerSelec[0]][playerSelec[1]-1]);
                 }
                 // Arriba
                 if(playerSelec[0]+1 <= mines.length-1 && field[playerSelec[0]+1][playerSelec[1]] != "F"){
-                    field[playerSelec[0]+1][playerSelec[1]] = Integer.toString(numbers[playerSelec[0]+1][playerSelec[1]]);
                     if(numbers[playerSelec[0]+1][playerSelec[1]] == 9 && field[playerSelec[0]+1][playerSelec[1]] == "-"){
                         gameOver = true;
                     }
+                    field[playerSelec[0]+1][playerSelec[1]] = Integer.toString(numbers[playerSelec[0]+1][playerSelec[1]]);
                 }
                 // Abaixo
                 if(playerSelec[0]-1 >= 0 && field[playerSelec[0]-1][playerSelec[1]] != "F"){
-                    field[playerSelec[0]-1][playerSelec[1]] = Integer.toString(numbers[playerSelec[0]-1][playerSelec[1]]);
                     if(numbers[playerSelec[0]-1][playerSelec[1]] == 9 && field[playerSelec[0]-1][playerSelec[1]] == "-"){
                         gameOver = true;
                     }
+                    field[playerSelec[0]-1][playerSelec[1]] = Integer.toString(numbers[playerSelec[0]-1][playerSelec[1]]);
                 }
                 // ArD
                 if(playerSelec[0]+1 <= mines.length-1 && playerSelec[1]+1 <= mines[playerSelec[0]].length-1 && field[playerSelec[0]+1][playerSelec[1]+1] != "F"){
-                    field[playerSelec[0]+1][playerSelec[1]+1] = Integer.toString(numbers[playerSelec[0]+1][playerSelec[1]+1]);
                     if(numbers[playerSelec[0]+1][playerSelec[1]+1] == 9 && field[playerSelec[0]+1][playerSelec[1]+1] == "-"){
                         gameOver = true;
                     }
+                    field[playerSelec[0]+1][playerSelec[1]+1] = Integer.toString(numbers[playerSelec[0]+1][playerSelec[1]+1]);
                 }
                 // ArE
                 if(playerSelec[0]+1 <= mines.length-1 && playerSelec[1]-1 >= 0 && field[playerSelec[0]+1][playerSelec[1]-1] != "F"){
-                    field[playerSelec[0]+1][playerSelec[1]-1] = Integer.toString(numbers[playerSelec[0]+1][playerSelec[1]-1]);
                     if(numbers[playerSelec[0]+1][playerSelec[1]-1] == 9 && field[playerSelec[0]+1][playerSelec[1]-1] == "-"){
                         gameOver = true;
                     }
+                    field[playerSelec[0]+1][playerSelec[1]-1] = Integer.toString(numbers[playerSelec[0]+1][playerSelec[1]-1]);
                 }
                 // AbD
                 if(playerSelec[0]-1 >= 0 && playerSelec[1]+1 <= mines[playerSelec[0]].length-1 && field[playerSelec[0]-1][playerSelec[1]+1] != "F"){
-                    field[playerSelec[0]-1][playerSelec[1]+1] = Integer.toString(numbers[playerSelec[0]-1][playerSelec[1]+1]);
                     if(numbers[playerSelec[0]-1][playerSelec[1]+1] == 9 && field[playerSelec[0]-1][playerSelec[1]+1] == "-"){
                         gameOver = true;
                     }
+                    field[playerSelec[0]-1][playerSelec[1]+1] = Integer.toString(numbers[playerSelec[0]-1][playerSelec[1]+1]);
                 }
                 // AbE
                 if(playerSelec[0]-1 >= 0 && playerSelec[1]-1 >= 0 && field[playerSelec[0]-1][playerSelec[1]-1] != "F"){
-                    field[playerSelec[0]-1][playerSelec[1]-1] = Integer.toString(numbers[playerSelec[0]-1][playerSelec[1]-1]);
                     if(numbers[playerSelec[0]-1][playerSelec[1]-1] == 9 && field[playerSelec[0]-1][playerSelec[1]-1] == "-"){
                         gameOver = true;
                     }
+                    field[playerSelec[0]-1][playerSelec[1]-1] = Integer.toString(numbers[playerSelec[0]-1][playerSelec[1]-1]);
                 }
             }
             else{
@@ -302,6 +377,11 @@ public class exer1 {
                 if (winCheck == false){
                     break;
                 }
+            }
+
+            // Unha vez se acabe o primeiro turno, cambiamos a variable
+            if(firstTurn == true){
+                firstTurn = false;
             }
         }
         scanner.close();
