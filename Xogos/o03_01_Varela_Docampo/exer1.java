@@ -213,7 +213,7 @@ public class exer1 {
                     System.out.println();
                 }
             }
-            /*
+            ///*
         // Mapa das minas
             for(int i = 0; i < mines.length; i++){
                 System.out.println("\t");
