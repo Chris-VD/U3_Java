@@ -1,7 +1,7 @@
 import java.util.Scanner;
 import java.util.Random;
 
-public class exer1 {
+public class exer1Old {
     public static void main(String[] args) {
         // Creamos as variables e vectores e todo eso
         Random random = new Random();
