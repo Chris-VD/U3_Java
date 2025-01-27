@@ -1,5 +1,3 @@
-package U3_Java.Probas;
-
 public class exer1 {
 
     public static void main(String[] args) {
