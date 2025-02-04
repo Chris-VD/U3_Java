@@ -6,9 +6,37 @@ public class Vehiculo {
     private String marca;
     private String modelo;
     private TipoCombustible tipoCombustible;
-    private double velocidade;
+    private double velocidade = 0;
     private static int NumeroTotalVehiculos = 0;
     private static int VelocidadeMaxima = 120;
+
+    // Constructors
+    /**
+     * Construe o obxeto con todas as súas variables
+     * @param matricula A matrícula do vehículo
+     * @param marca A marca do vehículo
+     * @param modelo O modelo do vehículo
+     * @param tipoCombustible O tipo de combustible do vehículo
+     */
+    @SuppressWarnings("OverridableMethodCallInConstructor")
+    public Vehiculo(String matricula, String marca, String modelo, TipoCombustible tipoCombustible) {
+        this.setMatricula(matricula);
+        this.setMarca(marca);
+        this.setModelo(modelo);
+        this.setTipoCombustible(tipoCombustible);
+        NumeroTotalVehiculos ++;
+    }
+    
+    /**
+     * Construe o obxeto cando non se especifican nin a velocidade nin o tipo de combustible
+     * A velocidade por defecto será 0 e o tipo de combistible gasolina
+     * @param matricula A matrícula do vehículo
+     * @param marca A marca do vehículo
+     * @param modelo O modelo do vehículo
+     */
+    public Vehiculo(String matricula, String marca, String modelo) {
+        this(matricula, marca, modelo, TipoCombustible.GASOLINA);
+    }
 
     // Methods
     /**
@@ -18,6 +46,7 @@ public class Vehiculo {
      *  -true se a matrícula é válida
      *  -fase se non o é
      */
+    // FIXME
     public static boolean checkMatricula(String matricula){
         if (matricula.length() != 7) return false;
         String numeros = matricula.substring(0, 4);
@@ -68,47 +97,6 @@ public class Vehiculo {
         this.cambioVelocidade(velocidade * -1);
     }
 
-    // Constructors
-    /**
-     * Construe o obxeto con todas as súas variables
-     * @param matricula A matrícula do vehículo
-     * @param marca A marca do vehículo
-     * @param modelo O modelo do vehículo
-     * @param tipoCombustible O tipo de combustible do vehículo
-     * @param velocidade A velocidade do vehículo
-     */
-    public Vehiculo(String matricula, String marca, String modelo, TipoCombustible tipoCombustible, double velocidade) {
-        if (checkMatricula(matricula) == true) this.matricula = matricula;
-        else this.matricula = "0000XXX";
-        this.marca = marca;
-        this.modelo = modelo;
-        this.tipoCombustible = tipoCombustible;
-        this.velocidade = velocidade;
-        NumeroTotalVehiculos ++;
-    }
-
-    /**
-     * Contrue o obeto cando non se especifica a velocidade á que vai, está ponse por defecto a 0
-     * @param matricula A matrícula do vehículo
-     * @param marca A marca do vehículo
-     * @param modelo O modelo do vehículo
-     * @param tipoCombustible O tipo de combustible do vehículo
-     */
-    public Vehiculo(String matricula, String marca, String modelo, TipoCombustible tipoCombustible) {
-        this(matricula, marca, modelo, tipoCombustible, 0);
-    }
-    
-    /**
-     * Construe o obxeto cando non se especifican nin a velocidade nin o tipo de combustible
-     * A velocidade por defecto será 0 e o tipo de combistible gasolina
-     * @param matricula A matrícula do vehículo
-     * @param marca A marca do vehículo
-     * @param modelo O modelo do vehículo
-     */
-    public Vehiculo(String matricula, String marca, String modelo) {
-        this(matricula, marca, modelo, TipoCombustible.GASOLINA);
-    }
-
     // Getters & Setters
     public String getMatricula() {
         return matricula;
@@ -150,10 +138,6 @@ public class Vehiculo {
 
     public double getVelocidade() {
         return velocidade;
-    }
-
-    public void setVelocidade(double velocidade) {
-        this.velocidade = velocidade;
     }
 
     public static int getNumeroTotalVehiculos() {
