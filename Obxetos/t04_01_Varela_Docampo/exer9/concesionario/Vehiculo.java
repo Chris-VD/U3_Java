@@ -51,9 +51,19 @@ public class Vehiculo {
         if (matricula.length() != 7) return false;
         String numeros = matricula.substring(0, 4);
         String consonantes = matricula.substring(4, 7);
-        if (!consonantes.matches("[A-Z]+") || consonantes.contains("A") || consonantes.contains("E") || consonantes.contains("I")
-            || consonantes.contains("O") || consonantes.contains("U")) return false;
-        return (numeros.matches("[0-9]+"));
+        char[] numArray = numeros.toCharArray();
+        char[] consArray = consonantes.toCharArray();
+        for(char numero:numArray){
+            // É a única maneira que se me ocurre de poder comprobar se todo son díxitos sen empregar tries ou expresións regulares
+            if (numero != '1' && numero != '2' && numero != '3' && numero != '4' && numero != '5' && numero != '6'
+            && numero != '7' && numero != '8' && numero != '9' && numero != '1') return false;
+        }
+        for(char consonante: consArray){
+            // Este if é feisimo e penso que se podería mellorar se fago un array de chars que conteña as vogais, despóis so tería que comprobar se a letra está dentro de dito array.
+            // Quedaría máis bonito pero paso
+            if(!(consonante >= 'A' && consonante <= 'Z') || (consonante == 'A' || consonante == 'E' || consonante == 'I' || consonante == 'O' || consonante == 'U')) return false;
+        }
+        return true;
     }
 
     /**
