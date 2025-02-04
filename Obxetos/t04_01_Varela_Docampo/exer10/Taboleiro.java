@@ -1,6 +1,7 @@
 public class Taboleiro{
-    private static int[][] taboleiro;
-    private static int casillas = 0;
+    @SuppressWarnings("FieldMayBeFinal")
+    private int[][] taboleiro;
+    private int casillas = 0;
 
     /**
      * Crea o taboleiro das dimensións especificadas, podería modificar o programa principal e algúns toques de este para que
@@ -21,13 +22,33 @@ public class Taboleiro{
      *  -true se a casilla se marcou demaneira correcta
      *  -false se a casilla xa estaba marcada de antemán (non se fan cambios nese caso)
      */
-    public boolean marcarCadrado(int[] info){
-        if(taboleiro[info[0]-1][info[1]-1] == 0){
-            taboleiro[info[0]-1][info[1]-1] = info[2];
+    public boolean marcarCadrado(int col, int fil, int xogador){
+        if(taboleiro[col][fil] == 0){
+            taboleiro[col][fil] = xogador;
             casillas++;
             return true;
         }
         else return false;
+    }
+
+    public String mostrarTaboleiro(){
+        String taboleiroFull = "";
+        String show = "";
+        for(int c = 1; c <= this.taboleiro.length; c++){taboleiroFull = taboleiroFull + "\tC" + c;}
+        taboleiroFull = taboleiroFull + "\n";
+        for(int i = 0; i < this.taboleiro.length; i++){
+            taboleiroFull=taboleiroFull + "F" + (i+1);
+            for(int j = 0; j < this.taboleiro.length; j++){
+                switch (taboleiro[i][j]) {
+                    case 0 -> show = "-";
+                    case 1 -> show = "X";
+                    case 2 -> show = "O";
+                }
+                taboleiroFull = taboleiroFull + "\t" + show;
+            }
+            taboleiroFull = taboleiroFull + "\n";
+        }
+        return taboleiroFull;
     }
 
     /**
@@ -37,8 +58,8 @@ public class Taboleiro{
      *  -check[0] é o estado do xogo, sendo true se hai algún gañador, false se non e null se hai empate
      *  -check[1] é o xogador que gañou, false se é o xogador 1, true se é o xogador 2 e null se hai empate
      */
-    public Boolean[] checkWin(){
-        Boolean[] check;
+    public Boolean checkWin(){
+        Boolean check;
         int mult;
         for(int[] fila : taboleiro){
             mult = 1;
@@ -46,7 +67,7 @@ public class Taboleiro{
                 mult = mult * fila[i];
             }
             check = checkTER(mult);
-            if (check[0] == true) return check;
+            if (check == true) return check;
         }
         for(int i = 0; i < taboleiro.length; i++){
             mult = 1;
@@ -54,22 +75,22 @@ public class Taboleiro{
                 mult = mult * fila[i];
             }
             check = checkTER(mult);
-            if (check[0] == true) return check;
+            if (check == true) return check;
         }
         mult = 1;
         for(int i = 0; i < taboleiro.length; i++){
             mult = mult * taboleiro[i][i];
         }
         check = checkTER(mult);
-        if (check[0] == true) return check;
+        if (check == true) return check;
         mult = 1;
         for(int i = 0; i < taboleiro.length; i++){
             mult = mult * taboleiro[i][taboleiro.length - 1 - i];
         }
         check = checkTER(mult);
-        if (check[0] == true) return check;
+        if (check == true) return check;
         if(casillas == Math.pow(taboleiro.length, 2)){
-            check[0] = null;
+            check = null;
         }
         return check;
     }
@@ -82,26 +103,23 @@ public class Taboleiro{
      *  -Se o resultado é 8, a sección ten un tres en raia do xogador 2
      * @return array de Boolean "check", que ten toda a información sobre o estado do xogo
      */
-    private Boolean[] checkTER(int mult){
-        Boolean[] check = new Boolean[2];
+    private Boolean checkTER(int mult){
+        Boolean check;
         switch (mult) {
             case 1 -> {
-                check[0] = true;
-                check[1] = false;
+                check = true;
             }
             case 8 -> {
-                check[0] = true;
-                check[1] = true;
+                check = true;
             }
             default -> {
-                check[0] = false;
-                check[1] = null;
+                check = false;
             }
         }
         return check;
     }
 
-    public static int[][] getTaboleiro() {
+    public int[][] getTaboleiro() {
         return taboleiro;
     }
     
