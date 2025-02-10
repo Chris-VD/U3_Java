@@ -91,10 +91,10 @@ public class App{
 
                     // Definimos todas as variables necesarias para facer as comprobacións e a suma das horas traballadas
                     Duration traballoTotal = Duration.ZERO;
+                    Duration traballado = null;
                     LocalDateTime horaEntrada = null;
                     LocalDateTime horaSaida = null;
-                    Duration traballado = null;
-                    // Lista dsa horas de entrada e saida do DNI seleccionado
+                    // Lista das horas de entrada e saida do DNI seleccionado
                     ArrayList<LocalDateTime> listaFichados = mapa.get(dniAComprobar);
 
                     // Imos valor por valor, tendo en conta que os pares son as horas de entrada e os impares as de saida
