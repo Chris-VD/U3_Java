@@ -32,7 +32,7 @@ public class App{
                 continue;
             }
             ArrayList<LocalDateTime> tempFicha = new ArrayList<>();
-            LocalDateTime novaFecha = LocalDateTime.now();
+            LocalDateTime novaFecha = LocalDateTime.now().minus(1, ChronoUnit.DAYS);
             for(int i = 0; i < mapa.size()+2; i++){
                 tempFicha.add(novaFecha);
                 novaFecha = novaFecha.plus(2, ChronoUnit.HOURS);
@@ -69,11 +69,17 @@ public class App{
                         break;
                     }
 
+                    // Esta parte do código era para engadir manualmente a hroa de fichado, para facer probas que tiveran sentido
+                    /*
                     // Pedimos e comprobamos a data de fichado
                     System.out.println("Introduza a hora de fichado (HH:mm d/M)");
                     // Como tal a data pídese en formato (HH:mm d/M) pero fai falta que teña o ano para poder facer o parse polo que engádoo logo
                     String horaAComprobar = scanner.nextLine()+"/"+ano;
                     LocalDateTime novaFecha = LocalDateTime.parse(horaAComprobar, formatoFichadoFull);
+                    */
+                    
+                    // Gardamos a hora actual
+                    LocalDateTime novaFecha = LocalDateTime.now();
                     mapa.get(dniAComprobar).add(novaFecha);
                     System.out.println("Fichado correctamente.");
                 }
