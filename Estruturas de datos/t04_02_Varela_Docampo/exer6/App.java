@@ -64,9 +64,13 @@ public class App{
                     String dniAComprobar = scanner.nextLine();
 
                     // Comprobamos o DNI
-                    if(!checkDni(dniAComprobar) || !mapa.containsKey(dniAComprobar)){
-                        System.out.println("DNI inválido.");
-                        break;
+                    if(!mapa.containsKey(dniAComprobar)){
+                        System.out.println("DNI non existe, engadindo novo...");
+                        if(!checkDni(dniAComprobar)){
+                            System.out.println("DNI inválido, non se puido engador.");
+                            break;
+                        }
+                        else mapa.put(dniAComprobar, new ArrayList<LocalDateTime>());
                     }
 
                     // Esta parte do código era para engadir manualmente a hroa de fichado, para facer probas que tiveran sentido
