@@ -51,7 +51,8 @@ public class App {
                         String pswS = scanner.nextLine();
 
                         // Comprobamos que a contrasinal sexa correcta
-                        if(!HashPassword.hashPassword(pswS).equals(user.getHash())){
+                        String hash = HashPassword.hashPassword(pswS);
+                        if(!hash.equals(user.getHash())){
                             System.out.println("Contrasinal incorrecto.");
                             continue;
                         }
@@ -81,10 +82,9 @@ public class App {
                         while (true){
                             System.out.println("Introduza seu contrasinal:");
                             pswS = scanner.nextLine();
-                            char[] psw = pswS.toCharArray();
 
                             // Comprobamos que sexa válido
-                            if(!checkValidPsw(psw)){
+                            if(!Usuario.checkValidPsw(pswS)){
                                 System.out.println("Contrasinal inválido, debe conter unha maiúsucla, minúscula e un número.");
                                 continue;
                             }
@@ -99,7 +99,7 @@ public class App {
                         }
 
                         // Creamos o novo usuario con tódolos datos e engadímolo ó rexistro
-                        Usuario novoUser = new Usuario(nome, username, HashPassword.hashPassword(pswS));
+                        Usuario novoUser = new Usuario(nome, username, pswS);
                         rexistro.put(username, novoUser);
                         System.out.println("Rexistrado correctamente!");
                     }
@@ -165,14 +165,7 @@ public class App {
                         // Comprobamos que non estea vacía
                         if (checkListEmpty(tarefas)) continue;
                         // Creamos unha nova lista para as tarefas que estan pendientes
-                        ArrayList<Tarefa> pendientes = new ArrayList<Tarefa>();
-                        // Comprobamos unha por unha
-                        for(Tarefa tarefa: tarefas){
-                            boolean isAfter = tarefa.getLimite().isAfter(LocalDateTime.now());
-                            boolean isPending = !tarefa.isCompletada();
-                            // Se a tarefa está pendiente engádese á nova lista, se non continúase
-                            if(isAfter && isPending) pendientes.add(tarefa);
-                        }
+                        ArrayList<Tarefa> pendientes = user.getPendientes();
                         // Comprobamos que haxa tarefas na nova lista
                         if (checkListEmpty(tarefas)) continue;
                         // Mostramos as tarefas e dámoslle a opción ó usuario de ver os detalles
@@ -184,13 +177,8 @@ public class App {
                     case 'd' -> {
                         ArrayList<Tarefa> tarefas = user.getTarefas();
                         if (checkListEmpty(tarefas)) continue;
-                        ArrayList<Tarefa> pendientes = new ArrayList<Tarefa>();
-                        for(Tarefa tarefa: tarefas){
-                            boolean isAfter = tarefa.getLimite().isAfter(LocalDateTime.now());
-                            boolean isPending = !tarefa.isCompletada();
-                            if(isAfter && isPending) pendientes.add(tarefa);
-                        }
-                        if (checkListEmpty(tarefas)) continue;
+                        ArrayList<Tarefa> pendientes = user.getPendientes();
+                        if (checkListEmpty(pendientes)) continue;
                         int opc2 = selecEMostrar(pendientes, true);
                         // Unha vez se lle mostra ó usario que tarefas están sen completar, este escolle cal quere cambiar (a liña de arriba) e cámbiase
                         pendientes.get(opc2-1).changeCompletada();
@@ -201,13 +189,12 @@ public class App {
                     case 'e' -> {
                         ArrayList<Tarefa> tarefas = user.getTarefas();
                         if (checkListEmpty(tarefas)) continue;
-                        ArrayList<Tarefa> pendientes = new ArrayList<Tarefa>();
-                        for(Tarefa tarefa: tarefas){
-                            boolean isBetween = tarefa.getLimite().isAfter(LocalDateTime.now()) && tarefa.getLimite().isBefore(LocalDateTime.now().plus(2, ChronoUnit.DAYS));
-                            boolean isPending = !tarefa.isCompletada();
-                            if(isBetween && isPending) pendientes.add(tarefa);
+                        ArrayList<Tarefa> pendientes = user.getPendientes();
+                        for(Tarefa tarefa: pendientes){
+                            boolean isBefore = tarefa.getLimite().isBefore(LocalDateTime.now().plus(2, ChronoUnit.DAYS));
+                            if(!isBefore) pendientes.remove(tarefa);
                         }
-                        if (checkListEmpty(tarefas)) continue;
+                        if (checkListEmpty(pendientes)) continue;
                         selecEMostrar(pendientes, false);
                     }
 
@@ -215,11 +202,8 @@ public class App {
                     case 'f' -> {
                         ArrayList<Tarefa> tarefas = user.getTarefas();
                         if (checkListEmpty(tarefas)) continue;
-                        ArrayList<Tarefa> completadas = new ArrayList<Tarefa>();
-                        for(Tarefa tarefa: tarefas){
-                            if(tarefa.isCompletada()) completadas.add(tarefa);
-                        }
-                        if (checkListEmpty(tarefas)) continue;
+                        ArrayList<Tarefa> completadas = user.getCompletadas();
+                        if (checkListEmpty(completadas)) continue;
                         selecEMostrar(completadas, false);
                     }
 
@@ -227,14 +211,9 @@ public class App {
                     case 'g' -> {
                         ArrayList<Tarefa> tarefas = user.getTarefas();
                         if (checkListEmpty(tarefas)) continue;
-                        ArrayList<Tarefa> pendientes = new ArrayList<Tarefa>();
-                        for(Tarefa tarefa: tarefas){
-                            boolean isBefore = tarefa.getLimite().isBefore(LocalDateTime.now());
-                            boolean isPending = !tarefa.isCompletada();
-                            if(isBefore && isPending) pendientes.add(tarefa);
-                        }
-                        if (checkListEmpty(tarefas)) continue;
-                        selecEMostrar(pendientes, false);
+                        ArrayList<Tarefa> pasadas = user.getPasadas();
+                        if (checkListEmpty(pasadas)) continue;
+                        selecEMostrar(pasadas, false);
                     }
 
                     // Cerrar sesión e volver ó menú principal
@@ -302,44 +281,13 @@ public class App {
         return opc2;
     }
 
-    /**
-     * Comproba que un contrasinal sexa válida
-     * @param psw contrasinal a comprobar
-     * @return boolean, true se é válida
-     */
-    public static boolean checkValidPsw(char[] psw){
-        // booleans que fan as comprobacións
-        boolean maiuscula = false;
-        boolean minuscula = false;
-        boolean numero = false;
-        // imos caracter por caracter comprobando que teña mínimo
-        for(char c:psw){
-            // unha maiúscula
-            if (!maiuscula && ((int)c >= 65 && (int)c <= 90)){
-                maiuscula = true;
-                continue;
-            }
-            // unha minúscula
-            if (!minuscula && ((int)c >= 97 && (int)c <= 122)){
-                minuscula = true;
-                continue;
-            }
-            // un número
-            if (!numero && ((int)c >= 48 && (int)c <= 57)){
-                numero = true;
-            }
-        }
-        // devolve os booleans, so será true se todos son true
-        return (numero && minuscula && maiuscula);
-    }
-
     // Estes dous métodos son so para engadir datos, ignorar
     public static void addUsers(){
         for(int i = 0; i < 4; i++){
             String username = "User"+i;
             String name = "Name"+i;
             String pswS = "Psw"+i;
-            Usuario newUser = new Usuario(username, name, HashPassword.hashPassword(pswS));
+            Usuario newUser = new Usuario(username, name, pswS);
             rexistro.put(username, newUser);
         }
     }

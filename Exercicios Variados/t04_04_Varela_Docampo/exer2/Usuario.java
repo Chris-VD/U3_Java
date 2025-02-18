@@ -1,5 +1,6 @@
 package exer2;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Usuario {
@@ -13,12 +14,84 @@ public class Usuario {
     public Usuario(String nome, String alias, String hash) {
         this.setNome(nome);
         this.setAlias(alias);
-        this.setHash(hash);
+        this.setHash(HashPassword.hashPassword(hash));
         // Como ó ingresr un usuario novo a lista de tarefas está caleira, fago unha nove en vez de mandar unha valeira ó chamar ó constructor
         this.tarefas = new ArrayList<Tarefa>();
     }
 
     // Métodos
+    /**
+     * Devolve unha lista de tarefas que están pasadas (a data límite xa pasou e non están completadas)
+     * @return ArrayList<Tarefa>
+     */
+    public ArrayList<Tarefa> getPasadas(){
+        ArrayList<Tarefa> pasadas = new ArrayList<>();
+        for(Tarefa tarefa: this.tarefas){
+            boolean isAfter = tarefa.getLimite().isBefore(LocalDateTime.now());
+            boolean isPending = !tarefa.isCompletada();
+            if(isAfter && isPending) pasadas.add(tarefa);
+        }
+        return pasadas;
+    }
+    
+    /**
+     * Devolve unha lista de tarefas que están pendientes (a data límite non pasou e están pendientes)
+     * @return ArrayList<Tarefa>
+     */
+    public ArrayList<Tarefa> getPendientes(){
+        ArrayList<Tarefa> pendientes = new ArrayList<>();
+        for(Tarefa tarefa: this.tarefas){
+            boolean isAfter = tarefa.getLimite().isAfter(LocalDateTime.now());
+            boolean isPending = !tarefa.isCompletada();
+            if(isAfter && isPending) pendientes.add(tarefa);
+        }
+        return pendientes;
+    }
+
+    /**
+     * Devolve unha lista de tarefas que están completadas
+     * @return ArrayList<Tarefa>
+     */
+    public ArrayList<Tarefa> getCompletadas(){
+        ArrayList<Tarefa> completadas = new ArrayList<>();
+        for(Tarefa tarefa: this.tarefas){
+            if(tarefa.isCompletada()) completadas.add(tarefa);
+        }
+        return completadas;
+    }
+
+     /**
+     * Comproba que un contrasinal sexa válida
+     * @param psw contrasinal a comprobar
+     * @return boolean, true se é válida
+     */
+    public static boolean checkValidPsw(String pswS){
+        char[] psw = pswS.toCharArray();
+        // booleans que fan as comprobacións
+        boolean maiuscula = false;
+        boolean minuscula = false;
+        boolean numero = false;
+        // imos caracter por caracter comprobando que teña mínimo
+        for(char c:psw){
+            // unha maiúscula
+            if (!maiuscula && ((int)c >= 65 && (int)c <= 90)){
+                maiuscula = true;
+                continue;
+            }
+            // unha minúscula
+            if (!minuscula && ((int)c >= 97 && (int)c <= 122)){
+                minuscula = true;
+                continue;
+            }
+            // un número
+            if (!numero && ((int)c >= 48 && (int)c <= 57)){
+                numero = true;
+            }
+        }
+        // devolve os booleans, so será true se todos son true
+        return (numero && minuscula && maiuscula);
+    }
+
     /**
      * Engade unha tarefa á lista de tarefas do usuario
      * @param tarefa Tarefa a engadir
@@ -57,7 +130,7 @@ public class Usuario {
     }
 
     public String getHash() {
-        return hash;
+        return this.hash;
     }
 
     private void setHash(String hash) {
