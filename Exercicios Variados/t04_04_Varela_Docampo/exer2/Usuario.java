@@ -1,6 +1,7 @@
 package exer2;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public class Usuario {
@@ -34,6 +35,20 @@ public class Usuario {
         return pasadas;
     }
     
+    /**
+     * Devolve unha lista de tarefas que están pasadas (a data límite xa pasou e non están completadas)
+     * @return ArrayList<Tarefa>
+     */
+    public ArrayList<Tarefa> get48H(){
+        ArrayList<Tarefa> t48h = new ArrayList<>();
+        ArrayList<Tarefa> pendientes = this.getPendientes();
+        for(Tarefa tarefa: pendientes){
+            boolean isBefore = tarefa.getLimite().isBefore(LocalDateTime.now().plus(2, ChronoUnit.DAYS));
+            if(isBefore) t48h.add(tarefa);
+        }
+        return t48h;
+    }
+
     /**
      * Devolve unha lista de tarefas que están pendientes (a data límite non pasou e están pendientes)
      * @return ArrayList<Tarefa>
