@@ -189,11 +189,7 @@ public class App {
                     case 'e' -> {
                         ArrayList<Tarefa> tarefas = user.getTarefas();
                         if (checkListEmpty(tarefas)) continue;
-                        ArrayList<Tarefa> pendientes = user.getPendientes();
-                        for(Tarefa tarefa: pendientes){
-                            boolean isBefore = tarefa.getLimite().isBefore(LocalDateTime.now().plus(2, ChronoUnit.DAYS));
-                            if(!isBefore) pendientes.remove(tarefa);
-                        }
+                        ArrayList<Tarefa> pendientes = user.get48H();
                         if (checkListEmpty(pendientes)) continue;
                         selecEMostrar(pendientes, false);
                     }
