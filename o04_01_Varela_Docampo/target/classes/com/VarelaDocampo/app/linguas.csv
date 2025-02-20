@@ -1,7 +1,7 @@
 id,gal,esp,eng
 saudo,Ola,Hola,Hello
 despedida,Atalogo,Hasta luego,Goodbye
-menuInicio,Selecciona unha opción,Selecciona una opción,Select an option,
+menuInicio,Selecciona unha opción,Selecciona una opción,Select an option
 cambiarLingua,Configurar lingua,Configurar idioma,Lenguage configuration
 seleccionaLingua,Selecciona unha lingua,Selecciona un idioma,Select a lenguage
 opcionInvalida,Selecciona unha opción válida,Selecciona una opción válida,Select a valid option

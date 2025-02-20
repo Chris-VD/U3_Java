@@ -20,4 +20,7 @@ public class Frase {
     public String getId(){
         return this.id;
     }
+    public String get(String id){
+        return this.frases.get(id);
+    }
 }
