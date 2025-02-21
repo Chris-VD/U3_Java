@@ -12,6 +12,12 @@ public class Frase {
     }
 
     // Métodos
+    /**
+     * engade a traducción da frase no idioma especificado
+     * @param lingua idioma especificado
+     * @param frase valor da frase en dito idioma
+     * o idima especificado será a clave do diccionario e a traducción será o valor
+     */
     public void engadirTraducion(String lingua, String frase){
         this.frases.put(lingua, frase);
     }
