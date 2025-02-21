@@ -101,6 +101,7 @@ public class App {
                                 continue;
                             }
                         }
+                        oMapper.writeValue(jsonFile, config);
                         break;
                     }
                 }
