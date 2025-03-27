@@ -12,7 +12,7 @@ public class App{
             if (c instanceof ICocheG){
                 ((CocheG)c).gasolina();
             }
-            else System.out.println("Non son gasolina");
+            else System.out.println("Non son gasolinax");
         }
     }
 }
