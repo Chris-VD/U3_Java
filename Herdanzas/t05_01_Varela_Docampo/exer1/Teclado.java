@@ -1,5 +1,4 @@
-package classes;
-import abstracts.Periferico;
+
 
 public class Teclado extends Periferico {
     public Teclado(String marca, String modelo, double prezo){

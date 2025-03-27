@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 
-import abstracts.*;
-import classes.*;
 import ernums.*;
 
 public class App {

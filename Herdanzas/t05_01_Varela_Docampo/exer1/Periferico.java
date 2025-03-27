@@ -1,4 +1,4 @@
-package abstracts;
+
 import java.util.ArrayList;
 
 import ernums.Conector;

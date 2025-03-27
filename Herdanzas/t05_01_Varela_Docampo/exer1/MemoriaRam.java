@@ -1,10 +1,10 @@
-package classes;
+
 public class MemoriaRam extends Componhente{
     private long memoriaBytes;
     private long velocidadeMemoriaHZ;
 
     // Constructores
-    public MemoriaRam(String marca, String modelo, double prezo, double memoriaGB, long velocidadeMemoriaGz){
+    public MemoriaRam(String marca, String modelo, double prezo, double velocidadeMemoriaGz, double memoriaGB){
         super(marca, modelo, prezo);
         this.memoriaBytes = gigaBytesToBytes(memoriaGB);
         this.velocidadeMemoriaHZ = gigaHzToHz(velocidadeMemoriaGz);

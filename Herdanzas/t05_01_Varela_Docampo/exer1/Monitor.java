@@ -1,5 +1,4 @@
-package classes;
-import abstracts.Periferico;
+
 
 public class Monitor extends Periferico{
     private double pulgadas;

@@ -1,5 +1,4 @@
-package classes;
-import abstracts.Produto;
+
 
 public class Componhente extends Produto{
     public Componhente(String marca, String modelo, double prezo){

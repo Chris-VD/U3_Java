@@ -1,4 +1,4 @@
-package classes;
+
 import ernums.Zocalo;
 
 public class Procesador extends Componhente{

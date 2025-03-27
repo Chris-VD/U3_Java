@@ -1,4 +1,4 @@
-package abstracts;
+
 public abstract class Produto {
     private String marca;
     private String modelo;
