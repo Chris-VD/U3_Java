@@ -128,11 +128,24 @@ public class App {
                 // Esto é para que non me aparezca amarelo no scanner por non pechalo
                 @SuppressWarnings("resource")
                 Scanner scanner = new Scanner(System.in);
-                System.out.println("Que desexa facer?\n\ta) Modificar nome\n\tb) Ingresar tarefa pendente\n\tc) Mostrar tarefas pendentes\n\t"+
+                String menu = """
+                                    Que desexa facer? 
+                                    a) Modificar nombre
+                                    b) Ingresar tarefa pendente
+                                    c) Mostrar tarefas pendentes
+                                    d) Marcar tarefa como realizada
+                                    e) Mostrar tarefas pendentes nas próximas 48 horas
+                                    f) Mostrar tarefas realizadas
+                                    g) Mostrar tarefas pendentes pero que se sobrepasou a data e hora límite
+                                    h) Cerrar sesión
+                                """;
+                System.out.println(menu);
+                /*
+                 * "Que desexa facer?\n\ta) Modificar nome\n\tb) Ingresar tarefa pendente\n\tc) Mostrar tarefas pendentes\n\t"+
                                 "d) Marcar tarefa como realizada\n\te) Mostrar tarefas pendentes nas próximas 48 horas\n\tf) Mostrar tarefas realizadas\n\t"+
-                                "g) Mostrar tarefas pendentes pero que se sobrepasou a data e hora límite\n\th) Cerrar sesión");
+                                "g) Mostrar tarefas pendentes pero que se sobrepasou a data e hora límite\n\th) Cerrar sesión"
+                 */
                 char opc = scanner.nextLine().charAt(0);
-
                 switch (opc) {
 
                     // Cambiar o nome
