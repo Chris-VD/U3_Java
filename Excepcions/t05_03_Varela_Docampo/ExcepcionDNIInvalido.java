@@ -1,4 +1,4 @@
-public class ExcepcionDNIInvalido extends RuntimeException{
+public class ExcepcionDNIInvalido extends Exception{
     public ExcepcionDNIInvalido(String msg){
         super(msg);
     }
