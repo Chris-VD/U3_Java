@@ -1,17 +1,17 @@
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmailSanClemente extends Email{
+    public static final Pattern patternSC = Pattern.compile("([^@]+)@iessanclemente.net");
+
     public EmailSanClemente(String email) throws EmailInvalidoException{
         super(email);
     }
 
     @Override
     public boolean comprobarEmail(String email){
-        Matcher matcher = pattern.matcher(email);
-        if (matcher.find()){
-            return matcher.group(2).equals("@iessanclemente.net");
-        }
-        return false;
+        Matcher matcher = patternSC.matcher(email);
+        return matcher.matches();
     }
 
     @Override
