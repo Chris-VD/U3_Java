@@ -1,6 +1,9 @@
 package modelo;
 
-public class Usuario {
+import modelo.excepcions.ConstrasinalInvalidoExcepcion;
+import utils.HashPassword;
+
+public abstract class Usuario {
     private String username;
     private String hash;
 
@@ -10,11 +13,10 @@ public class Usuario {
      * @param username
      * @param hash
      */
-    public Usuario(String username, String hash){
+    public Usuario(String username, String psswd) throws ConstrasinalInvalidoExcepcion{
+        this.setHash(psswd);
         this.setUername(username);
-        this.setHash(hash);
     }
-
 
     // Getters & Setters
     public String getHash(){
@@ -26,7 +28,8 @@ public class Usuario {
     public void setUername(String username){
         this.username = username;
     }
-    public void setHash(String hash){
-        this.hash = hash;
+    public void setHash(String psswd) throws ConstrasinalInvalidoExcepcion{
+        if (psswd.length() < 7) throw new ConstrasinalInvalidoExcepcion("O contrasinal debe conter máis de 7 caracterres.");
+        this.hash = HashPassword.hashPassword(psswd);
     }
 }

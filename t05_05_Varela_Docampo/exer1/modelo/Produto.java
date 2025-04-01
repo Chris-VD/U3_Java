@@ -21,9 +21,6 @@ public abstract class Produto {
         this.setPrezos(prezo);
         this.setId();
     }
-    public Produto(double prezo, String descricion) throws PrezoMenorZeroExcepcion, StockMenorZeroExcepcion{
-        this(prezo, descricion, 0);
-    }
 
     // Métodos
     public void eliminarStock(int stockAEliminar) throws StockAEliminarInvalido{
