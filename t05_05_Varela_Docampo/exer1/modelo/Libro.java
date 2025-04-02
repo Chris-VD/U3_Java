@@ -19,7 +19,7 @@ public class Libro extends Complemento{
     // Metodos
     @Override
     public String toString(){
-        return "Libro: "+this.titulo+", ISBN: "+this.isbn+"."+super.toString();
+        return "Libro: "+this.titulo+", ISBN: "+this.isbn+". "+super.toString();
     }
 
     // Getters & Setters

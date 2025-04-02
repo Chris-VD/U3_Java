@@ -18,7 +18,7 @@ public class Estoxo extends Complemento{
     // Metodos
     @Override
     public String toString(){
-        return "Estoxo "+this.marca+" para "+this.instrumento+" :"+super.toString();
+        return "Estoxo "+this.marca+" para "+this.instrumento+": "+super.toString();
     }
 
     // Getters & Setters

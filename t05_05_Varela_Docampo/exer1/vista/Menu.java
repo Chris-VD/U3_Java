@@ -3,9 +3,6 @@ package vista;
 import java.util.List;
 import java.util.Scanner;
 
-import modelo.excepcions.ConstrasinalInvalidoExcepcion;
-import modelo.excepcions.UsuarioRepetidoExcepcion;
-
 public abstract class Menu {
     private Scanner scanner;
 
@@ -16,19 +13,11 @@ public abstract class Menu {
         scanner = new Scanner(System.in);
     }
 
-    /**
-     * Arranca o menú
-     */
-    public void run() throws UsuarioRepetidoExcepcion, ConstrasinalInvalidoExcepcion{
+    public void run(){
         this.mostrar();
     }
 
-    /**
-     * Método abstracto, que é necesario implantar para mostrar por terminal
-     * @throws ConstrasinalInvalidoExcepcion 
-     * @throws UsuarioRepetidoExcepcion 
-     */
-    protected abstract void mostrar() throws UsuarioRepetidoExcepcion, ConstrasinalInvalidoExcepcion;
+    protected abstract void mostrar();
 
     /**
      * Pide por teclado unha cadea de texto

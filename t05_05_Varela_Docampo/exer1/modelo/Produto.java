@@ -33,7 +33,7 @@ public abstract class Produto {
 
     @Override
     public String toString(){
-        return "Prezo con IVE: "+this.prezoIVE+"€ ; Prezo sen IVE: "+this.prezo+"€ ; Stock: "+this.stock+" unidades ; Descrición: "+this.descricion+".";
+        return "Prezo con IVE: "+this.prezoIVE+"€ ; Prezo sen IVE: "+this.prezo+"€ ; Stock: "+this.stock+" unidades ; Descrición: "+this.descricion+". ID: "+this.getId();
     }
 
     // Getters & Setters
@@ -48,6 +48,7 @@ public abstract class Produto {
     }
     public void setStock(int stock) throws StockMenorZeroExcepcion{
         if (stock < 0) throw new StockMenorZeroExcepcion("O stock dun produto non pode ser negativo.");
+        this.stock = stock;
     }
     public static int getContador() {
         return contador;

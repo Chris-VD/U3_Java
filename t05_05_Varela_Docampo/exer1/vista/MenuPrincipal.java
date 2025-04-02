@@ -9,7 +9,7 @@ import modelo.excepcions.UsuarioRepetidoExcepcion;
 
 public class MenuPrincipal extends Menu{
     @Override
-    protected void mostrar() throws UsuarioRepetidoExcepcion, ConstrasinalInvalidoExcepcion{
+    protected void mostrar(){
         this.printMessage("Benvido á tenda de musica de santiago");
         boolean principal = true;
         while (principal){
@@ -28,29 +28,32 @@ public class MenuPrincipal extends Menu{
                     else{
                         novoUser = novoUserRaw.get();
                     }
-                    // FIXME
                     // Run menu admin
-                    if (TendaMusica.getInstance().isAdmin(novoUser)) ;
+                    if (TendaMusica.getInstance().isAdmin(novoUser)) new MenuAdmin().run();
                     // Run menu user
-                    else ;
+                    else new MenuCliente().run();
                 }
                 case "b"->{
                     String user = this.getString("Introduza seu nome de usuario: ");
                     String pswd = this.getString("Introduza sua contrasinal: ");
                     String pswd2 = this.getString("Introduza sua contrasinal de novo: ");
                     boolean isAdmin = this.getBoolean("É este usuario un admin? (Y/N): ");
-                    Optional<Usuario> novoUserRaw = TendaMusica.getInstance().rexistro(user, pswd, pswd2, isAdmin);
-                    Usuario novoUser;
+                    Optional<Usuario> novoUserRaw;
+                    try {
+                        novoUserRaw = TendaMusica.getInstance().rexistro(user, pswd, pswd2, isAdmin);
+                    } catch (UsuarioRepetidoExcepcion e) {
+                        this.printMessage(e.getMessage());
+                        continue;
+                    } catch (ConstrasinalInvalidoExcepcion e) {        
+                        this.printMessage(e.getMessage());
+                        continue;
+                    }
                     if (novoUserRaw.isEmpty()){
                         this.printMessage("O rexistro fallou, tente de novo.");
                         continue;
                     }
-                    else{
-                        novoUser = novoUserRaw.get();
-                    }
-                    // FIXME
-                    if (isAdmin) ;
-                    else ;
+                    if (isAdmin) new MenuAdmin().run();
+                    else new MenuCliente().run();
                 }
                 case "s"->{
                     this.printMessage("Saindo do programa...");
