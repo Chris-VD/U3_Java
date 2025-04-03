@@ -26,14 +26,13 @@ import modelo.excepcions.UsuarioRepetidoExcepcion;
 import utils.EnumInstrumentos;
 import utils.EnumSaxofons;
 import utils.HashPassword;
+import utils.RolesEnum;
 
 public class TendaMusica {
     // Instancia do singleton
     public static TendaMusica INSTANCE;
 
     private HashMap<String, Usuario> usuarios;
-    private ArrayList<Admin> admins;
-    private ArrayList<Cliente> clientes;
 
     private HashMap<String, Produto> produtos;
     private ArrayList<Instrumento> instrumentos;
@@ -45,10 +44,8 @@ public class TendaMusica {
     private ArrayList<Estoxo> estoxos;
 
     // Constructores
-    private TendaMusica(){
+    private TendaMusica() throws UsuarioRepetidoExcepcion, ConstrasinalInvalidoExcepcion, PrezoMenorZeroExcepcion, StockMenorZeroExcepcion, ISBNInvalidoExcepcion{
         usuarios = new HashMap<>();
-        admins = new ArrayList<>();
-        clientes = new ArrayList<>();
         produtos = new HashMap<>();
         instrumentos = new ArrayList<>();
         complementos = new ArrayList<>();
@@ -57,6 +54,7 @@ public class TendaMusica {
         trombons = new ArrayList<>();
         libros = new ArrayList<>();
         estoxos = new ArrayList<>();
+        this.engadirDatos();
     }
 
     // Métodos
@@ -85,25 +83,23 @@ public class TendaMusica {
         return Optional.empty();
     }
 
-    public Optional<Usuario> rexistro(String user, String psswd, String psswd2, boolean admin) throws UsuarioRepetidoExcepcion, ConstrasinalInvalidoExcepcion{
+    public Optional<Usuario> rexistro(String user, String psswd, String psswd2, RolesEnum rol) throws UsuarioRepetidoExcepcion, ConstrasinalInvalidoExcepcion{
         comprobarUsername(user);
         if (!psswd.equals(psswd2)) return Optional.empty();
-        if (admin) {
-            Admin novoUser = new Admin(user, psswd);
-            admins.add(novoUser);
+        if (rol.equals(RolesEnum.ADMIN)) {
+            Admin novoUser = new Admin(user, psswd, RolesEnum.ADMIN);
             engadirUsuario(novoUser);
             return Optional.of(novoUser);
         }
         else {
-            Cliente novoUser = new Cliente(user, psswd);
-            clientes.add(novoUser);
+            Cliente novoUser = new Cliente(user, psswd, RolesEnum.CLIENTE);
             engadirUsuario(novoUser);
             return Optional.of(novoUser);
         }
     }
 
     public boolean isAdmin(Usuario user){
-        return admins.contains(user);
+        return user.getRol().equals(RolesEnum.ADMIN);
     }
 
     // Para engadir produtos
@@ -200,11 +196,26 @@ public class TendaMusica {
         produtos.get(idProd).eliminarStock(1);
     }
 
+    public void engadirDatos() throws UsuarioRepetidoExcepcion, ConstrasinalInvalidoExcepcion, PrezoMenorZeroExcepcion, StockMenorZeroExcepcion, ISBNInvalidoExcepcion{
+        this.rexistro("Admin", "adminpswd", "adminpswd", RolesEnum.ADMIN);
+        this.rexistro("Cliente", "clientepswd", "clientepswd", RolesEnum.CLIENTE);
+        this.engadirFrauta(20, "Frauta exemplo", 10, "Marca1", "Modelo1", false);
+        this.engadirSaxofon(50, "Saxofón exemplo", 1, "Marca1", "Modelo2", EnumSaxofons.ALTO);
+        this.engadirTrombon(100, "Trombón exemplo", 2, "Marca2", "Modelo1", true);
+        this.engadirEstoxo(10, "Estoxo exemplo", 20, EnumInstrumentos.FRAUTA, "Marca3");
+        this.engadirLibro(20, "Libro exemplo", 0, "Libro1", "0061964360");
+    }
+
     // Getters & Setters
     public static TendaMusica getInstance(){
         //Se inda non se accedeu, inicializase
         if(INSTANCE == null) {
-            INSTANCE = new TendaMusica();
+            try {
+                INSTANCE = new TendaMusica();
+            } catch (UsuarioRepetidoExcepcion | ConstrasinalInvalidoExcepcion | PrezoMenorZeroExcepcion
+                    | StockMenorZeroExcepcion | ISBNInvalidoExcepcion e) {
+                e.printStackTrace();
+            }
         }
         return INSTANCE;
     }

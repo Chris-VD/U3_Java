@@ -6,6 +6,7 @@ import controlador.TendaMusica;
 import modelo.Usuario;
 import modelo.excepcions.ConstrasinalInvalidoExcepcion;
 import modelo.excepcions.UsuarioRepetidoExcepcion;
+import utils.RolesEnum;
 
 public class MenuPrincipal extends Menu{
     @Override
@@ -38,9 +39,10 @@ public class MenuPrincipal extends Menu{
                     String pswd = this.getString("Introduza sua contrasinal: ");
                     String pswd2 = this.getString("Introduza sua contrasinal de novo: ");
                     boolean isAdmin = this.getBoolean("É este usuario un admin? (Y/N): ");
+                    RolesEnum rol = isAdmin ? RolesEnum.ADMIN:RolesEnum.CLIENTE;
                     Optional<Usuario> novoUserRaw;
                     try {
-                        novoUserRaw = TendaMusica.getInstance().rexistro(user, pswd, pswd2, isAdmin);
+                        novoUserRaw = TendaMusica.getInstance().rexistro(user, pswd, pswd2, rol);
                     } catch (UsuarioRepetidoExcepcion e) {
                         this.printMessage(e.getMessage());
                         continue;

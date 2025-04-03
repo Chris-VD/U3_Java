@@ -2,10 +2,12 @@ package modelo;
 
 import modelo.excepcions.ConstrasinalInvalidoExcepcion;
 import utils.HashPassword;
+import utils.RolesEnum;
 
 public abstract class Usuario {
     private String username;
     private String hash;
+    private RolesEnum rol;
 
     // Constructor
     /**
@@ -13,9 +15,10 @@ public abstract class Usuario {
      * @param username
      * @param hash
      */
-    public Usuario(String username, String psswd) throws ConstrasinalInvalidoExcepcion{
+    public Usuario(String username, String psswd, RolesEnum rol) throws ConstrasinalInvalidoExcepcion{
         this.setHash(psswd);
         this.setUername(username);
+        this.rol = rol;
     }
 
     // Getters & Setters
@@ -24,6 +27,9 @@ public abstract class Usuario {
     }
     public String getUsername(){
         return username;
+    }
+    public RolesEnum getRol(){
+        return rol;
     }
     public void setUername(String username){
         this.username = username;
