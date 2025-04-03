@@ -28,8 +28,15 @@ public class DAOFestivalMemoria implements DAOFestival{
 
     @Override
     public Festival getProximoFestival() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getProximoFestival'");
+        Festival proximo = null;
+        LocalDate data = LocalDate.of(2030, 1, 1);
+        for (Festival f:festivales){
+            if (f.getInicio().isBefore(data)){
+                proximo = f;
+                data = f.getInicio();
+            }
+        }
+        return proximo;
     }
 
     @Override
