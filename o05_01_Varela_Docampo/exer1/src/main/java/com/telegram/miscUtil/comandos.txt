@@ -1,0 +1,8 @@
+/help: lista de todos os comandos
+/ver: ver lista e detalles de todos os festivales
+/proximo: ver o próximo festivale
+/provincia $x: ver todos os festivales dunha provincia en específico
+    (c -> Coruña,
+    p -> Pontevedra,
+    o -> Ourense,
+    l -> Lugo)

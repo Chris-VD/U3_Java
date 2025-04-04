@@ -1,8 +1,11 @@
-package com.telegram;
+package com.telegram.modelo;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Festival {
+    public static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     private String nome;
     private String poboacion;
     private Provincia provincia;
@@ -16,6 +19,12 @@ public class Festival {
         this.provincia = provincia;
         this.inicio = inicio;
         this.fin = fin;
+    }
+
+    // Métodos
+    @Override
+    public String toString(){
+        return this.getNome()+": "+this.getPoboacion()+", "+this.getProvincia()+". Dende o "+this.getInicio().format(FORMATO)+" ata o "+this.getFin().format(FORMATO);
     }
 
     // Getters & Setters

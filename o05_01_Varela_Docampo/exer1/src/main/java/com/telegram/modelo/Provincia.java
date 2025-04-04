@@ -1,4 +1,4 @@
-package com.telegram;
+package com.telegram.modelo;
 
 public enum Provincia {
     ACORUÑA,

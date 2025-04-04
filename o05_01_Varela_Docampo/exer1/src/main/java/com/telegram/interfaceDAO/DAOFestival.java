@@ -1,6 +1,9 @@
-package com.telegram;
+package com.telegram.interfaceDAO;
 
 import java.util.List;
+
+import com.telegram.modelo.Festival;
+import com.telegram.modelo.Provincia;
 
 public interface DAOFestival {
     List<Festival> getFestivales();

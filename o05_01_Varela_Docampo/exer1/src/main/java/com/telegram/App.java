@@ -3,6 +3,8 @@ package com.telegram;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import com.telegram.modelo.BotFestivais;
+
 public class App {
     public static void main(String[] args) {
         // Registra o bot
