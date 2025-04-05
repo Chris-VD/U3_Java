@@ -4,8 +4,11 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,19 +108,58 @@ public class DAOFestivalDB implements DAOFestival {
 
     @Override
     public List<Festival> getFestivales() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFestivales'");
+        String select = "SELECT nome, poboacion, provincia_id, data_comenzo, data_fin FROM Festivais";
+        ArrayList<Festival> festivais = new ArrayList<>();
+        try {
+            Connection conn = DriverManager.getConnection(URL_DB);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(select);
+            while (rs.next()){
+                Provincia prov = null;
+                switch (rs.getInt("provincia_id")) {
+                    case 1 ->{
+                        prov = Provincia.ACORUÑA;
+                    }
+                    case 2 ->{
+                        prov = Provincia.LUGO;
+                    }
+                    case 3 ->{
+                        prov = Provincia.OURENSE;
+                    }
+                    case 4 ->{
+                        prov = Provincia.PONTEVEDRA;
+                    }
+                }
+                // FIXME Esto pode que non funcione que non sei exactamente como se gardan as Dates na base de datos e a covnersión a Localdate é rara
+                festivais.add(new Festival(rs.getString("nome"), rs.getString("poboacion"), prov, (LocalDate) rs.getDate("data_comenzo", null).toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), rs.getDate("data_fin", null).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return festivais;
     }
 
     @Override
     public Festival getProximoFestival() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getProximoFestival'");
+        Festival festival = null;
+        LocalDate dataLim = LocalDate.of(2030, 1, 1);
+        for (Festival f:this.getFestivales()){
+            if (f.getInicio().isBefore(dataLim)){
+                dataLim = f.getInicio();
+                festival = f;
+            }
+        }
+        return festival;
     }
 
     @Override
     public List<Festival> getFestivaisProvincia(Provincia provincia) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFestivaisProvincia'");
+        ArrayList<Festival> festivais = new ArrayList<>();
+        for (Festival f:this.getFestivales()){
+            if (f.getProvincia() == provincia){
+                festivais.add(f);
+            }
+        }
+        return festivais;
     }
 }
