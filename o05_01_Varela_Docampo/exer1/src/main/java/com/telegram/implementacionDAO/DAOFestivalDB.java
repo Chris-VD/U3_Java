@@ -2,6 +2,7 @@ package com.telegram.implementacionDAO;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +11,9 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import com.telegram.interfaceDAO.DAOFestival;
 import com.telegram.miscUtil.engadirFestivales;
@@ -36,6 +39,10 @@ public class DAOFestivalDB implements DAOFestival {
             System.out.println("Carga finalizada");
         }
         else {
+            // System.out.println("Reiniciando a DB...");
+            // File DBtxt = new File("festivais.db");
+            // DBtxt.delete();
+            // new DAOFestivalDB();
             System.out.println("Base de datos atopada");
         }
     }
@@ -93,17 +100,31 @@ public class DAOFestivalDB implements DAOFestival {
             }
 
             String inserirFestivais = "INSERT OR IGNORE INTO Festivais (nome, poboacion, provincia_id, data_comenzo, data_fin) VALUES (?, ?, ?, ?, ?);";
-            ps = conn.prepareStatement(inserirFestivais);
+            PreparedStatement psF = conn.prepareStatement(inserirFestivais);
             ArrayList<Festival> festivales = engadirFestivales.getFestivales();
-
+            // System.out.println("\nEngadindo datos...");
             for (Festival f:festivales) {
-                // FIXME provincia_id? tipo de datos para as datas?
-                ps.setString(1, f.getNome(), f.getPoboacion(), prov_id, f.getInicio(), f.getFin());
-                ps.executeUpdate();
+                psF.setString(1, f.getNome());
+                psF.setString(2, f.getPoboacion());
+                psF.setInt(3, this.getProv(f.getProvincia()));
+                psF.setDate(4, new java.sql.Date(Date.from(f.getInicio().atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime()));
+                psF.setDate(5, new java.sql.Date(Date.from(f.getFin().atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime()));
+                psF.executeUpdate();
+                // System.out.println("Engadido "+ f.getNome() +", data - "+f.getInicio());
             }
+            // System.out.println("Finalizado.\n");
         } catch (SQLException e) {
             System.out.println(e.toString());
         }
+    }
+
+    private Integer getProv(Provincia prov){
+        for(Map.Entry<Integer, Provincia> entry: Provincia.provinciasHM.entrySet()) {
+            if(entry.getValue() == prov) {
+                return entry.getKey();
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -116,22 +137,9 @@ public class DAOFestivalDB implements DAOFestival {
             ResultSet rs = stmt.executeQuery(select);
             while (rs.next()){
                 Provincia prov = null;
-                switch (rs.getInt("provincia_id")) {
-                    case 1 ->{
-                        prov = Provincia.ACORUÑA;
-                    }
-                    case 2 ->{
-                        prov = Provincia.LUGO;
-                    }
-                    case 3 ->{
-                        prov = Provincia.OURENSE;
-                    }
-                    case 4 ->{
-                        prov = Provincia.PONTEVEDRA;
-                    }
-                }
-                // FIXME Esto pode que non funcione que non sei exactamente como se gardan as Dates na base de datos e a covnersión a Localdate é rara
-                festivais.add(new Festival(rs.getString("nome"), rs.getString("poboacion"), prov, (LocalDate) rs.getDate("data_comenzo", null).toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), rs.getDate("data_fin", null).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+                prov = Provincia.provinciasHM.get(rs.getInt("provincia_id"));
+                // REVIEW Esto pode que non funcione que non sei exactamente como se gardan as Dates na base de datos e a covnersión a Localdate é rara
+                festivais.add(new Festival(rs.getString("nome"), rs.getString("poboacion"), prov, rs.getDate("data_comenzo", Calendar.getInstance()).toLocalDate(), rs.getDate("data_fin", Calendar.getInstance()).toLocalDate()));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

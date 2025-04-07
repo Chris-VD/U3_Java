@@ -1,15 +1,22 @@
 package com.telegram.modelo;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
+import org.apache.commons.io.FileUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.telegram.implementacionDAO.DAOFestivalDB;
 import com.telegram.implementacionDAO.DAOFestivalMemoria;
 import com.telegram.interfaceDAO.DAOFestival;
 
@@ -21,7 +28,19 @@ public class BotFestivais extends TelegramLongPollingBot{
     // Constructores
     public BotFestivais(){
         super(token);
-        this.daoFest = new DAOFestivalMemoria();
+
+        String option = "";
+        try {   
+            ObjectMapper objectMapper = new ObjectMapper();
+            String config = FileUtils.readFileToString(new File("config.json"), StandardCharsets.UTF_8);
+            JsonNode jsonNode = objectMapper.readTree(config);
+            option = jsonNode.get("data_source").asText();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (option.equals("db")) this.daoFest = new DAOFestivalDB();
+        else this.daoFest = new DAOFestivalMemoria();
     }
 
     // Métodos
@@ -44,7 +63,7 @@ public class BotFestivais extends TelegramLongPollingBot{
                     if (mensaxes.length <= 1 || mensaxes[1].length() <= 1){
                         execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), this.verComandos()));
                     }
-                    execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), this.verFestProv(mensaxes[1].charAt(1))));
+                    execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), this.verFestProv(String.valueOf(mensaxes[1].charAt(1)))));
                 }
                 default ->{
                     System.out.println("Default!");
@@ -56,25 +75,15 @@ public class BotFestivais extends TelegramLongPollingBot{
         }
     }
 
-    public String verFestProv(char prov){
+    public String verFestProv(String prov){
         Provincia provincia = Provincia.ACORUÑA;
-        switch (prov) {
-            case 'c'->{
-                provincia = Provincia.ACORUÑA;
-            }
-            case 'p'->{
-                provincia = Provincia.PONTEVEDRA;
-            }
-            case 'o'->{
-                provincia = Provincia.OURENSE;
-            }
-            case 'l'->{
-                provincia = Provincia.LUGO;
-            }
-            default->{
-                return "Provincia inválida, tente de novo.";
-            }
-        }
+        HashMap<String, Provincia> provinciasHM = new HashMap<>(){{
+            put("c", Provincia.ACORUÑA);
+            put("l", Provincia.LUGO);
+            put("o", Provincia.OURENSE);
+            put("p", Provincia.PONTEVEDRA);
+        }};
+        provincia = provinciasHM.get(prov);
         String resultado = "Fetivales de "+provincia+"\n";
         for (Festival f:daoFest.getFestivaisProvincia(provincia)){
             resultado += "-"+f.toString()+"\n";
@@ -88,9 +97,13 @@ public class BotFestivais extends TelegramLongPollingBot{
 
     public String verTodos(){
         String result = "Todos os festivais rexistrados:\n";
-        for (Festival f:daoFest.getFestivales()){
+        // int i = 0;
+        // System.out.println("Inicio -> "+result);
+        for (Festival f:daoFest.getFestivales()){    
+            // System.out.println("\tIteración -> "+i++);
             result += "-"+f.toString()+"\n";
         }
+        // System.out.println("Fin -> "+result);
         return result;
     }
 
