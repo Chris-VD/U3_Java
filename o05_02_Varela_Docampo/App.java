@@ -1,3 +1,6 @@
+import SC.ArboreBinariaBusca;
+import SC.Xogador;
+
 public class App {
     public static void main(String[] args){
         ArboreBinariaBusca<Xogador> abb = new ArboreBinariaBusca<>();
