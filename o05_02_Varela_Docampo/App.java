@@ -13,7 +13,13 @@ public class App {
         abb.engadirElemento(new Xogador("Erling Haaland", 99));
 
         for (Xogador xog:abb.recorridoInOrde()){
-            System.out.println(xog.toString());
+            System.out.println(xog);
+        }
+
+        System.out.println();
+
+        for(Xogador xogador:abb) {
+            System.out.println(xogador);
         }
     }
 }
