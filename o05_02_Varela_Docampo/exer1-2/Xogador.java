@@ -1,4 +1,3 @@
-package SC;
 public class Xogador implements Comparable<Xogador>{
     private String nome;
     private int dorsal;

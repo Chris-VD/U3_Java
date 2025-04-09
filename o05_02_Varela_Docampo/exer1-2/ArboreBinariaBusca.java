@@ -1,4 +1,3 @@
-package SC;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,9 +35,6 @@ public class ArboreBinariaBusca<T extends Comparable<T>> implements Comparable<T
 
     @Override
     public Iterator<T> iterator() {
-        // "Type safety: The expression of type IteradorABB needs unchecked conversion to conform to Iterator<T>Java(16777748)"
-        // "IteradorABB is a raw type. References to generic type IteradorABB<T> should be parameterizedJava(16777788)"
-        // Nin me vou molestar
         Iterator<T> iterador = new IteradorABB<T>(this);
         return iterador;
     }
