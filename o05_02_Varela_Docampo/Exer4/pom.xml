@@ -1,0 +1,20 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mycompany.app</groupId>
+  <artifactId>my-app</artifactId>
+  <version>1</version>
+  <repositories>
+    <repository>
+        <id>prog</id>
+        <name>prog</name>
+        <url>http://localhost:8081/repository/prog/</url>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+        <groupId>arbores</groupId>
+        <artifactId>Arbores</artifactId>
+        <version>1</version>
+    </dependency>
+  </dependencies>
+</project>
